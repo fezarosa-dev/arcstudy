@@ -1,0 +1,207 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Quiz Arquitetura II</title>
+<style>
+:root{--bg:#f4f5fb;--card:#fff;--ink:#1c1f33;--mut:#6b7090;--line:#e3e5f1;--acc:#6c5ce7;--acc2:#a29bfe;
+--ok:#12a36b;--okbg:#e4f8ef;--bad:#e5484d;--badbg:#fdeaea;--warn:#f5a524;--shadow:0 6px 24px rgba(50,50,93,.08)}
+@media(prefers-color-scheme:dark){:root{--bg:#0f1020;--card:#181a30;--ink:#eceefc;--mut:#8b90b5;--line:#2a2d4a;--acc:#8b7cff;
+--okbg:#10382b;--badbg:#3c1a1f;--shadow:0 6px 24px rgba(0,0,0,.4)}}
+*{box-sizing:border-box}
+body{margin:0;font:16px/1.55 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;background:var(--bg);color:var(--ink);
+background-image:radial-gradient(900px 400px at 10% -10%,color-mix(in srgb,var(--acc) 18%,transparent),transparent),
+radial-gradient(700px 400px at 100% 0,color-mix(in srgb,#00cec9 14%,transparent),transparent);background-attachment:fixed}
+header{display:flex;align-items:center;gap:16px;padding:14px 24px;flex-wrap:wrap;max-width:1200px;margin:auto}
+.brand{font-weight:800;font-size:20px;letter-spacing:-.02em;background:linear-gradient(90deg,var(--acc),#00b8b0);-webkit-background-clip:text;background-clip:text;color:transparent}
+nav{display:flex;gap:6px;background:var(--card);padding:5px;border-radius:14px;box-shadow:var(--shadow)}
+nav button{border:0;background:none;color:var(--mut);padding:8px 16px;border-radius:10px;font:600 14px inherit;cursor:pointer}
+nav button.on{background:var(--acc);color:#fff}
+.sp{flex:1}
+main{max-width:1200px;margin:auto;padding:0 24px 60px;display:grid;grid-template-columns:1fr 320px;gap:20px}
+@media(max-width:900px){main{grid-template-columns:1fr;padding:0 14px 60px}}
+.card{background:var(--card);border-radius:20px;padding:26px;box-shadow:var(--shadow);border:1px solid var(--line)}
+.meta{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-bottom:14px}
+.tag{font:700 12px inherit;padding:4px 10px;border-radius:99px;background:var(--bg);color:var(--mut);border:1px solid var(--line)}
+.tag.F{color:var(--ok)}.tag.M{color:var(--warn)}.tag.D{color:var(--bad)}
+.qtext{font-size:19px;font-weight:600;white-space:pre-wrap;margin:0 0 20px;line-height:1.5}
+.opt{display:flex;gap:14px;align-items:flex-start;width:100%;text-align:left;background:var(--card);color:var(--ink);
+border:2px solid var(--line);border-radius:14px;padding:14px 16px;margin-bottom:10px;font:inherit;cursor:pointer;
+transition:transform .12s,border-color .12s,background .12s}
+.opt:hover:not(:disabled){border-color:var(--acc);transform:translateX(3px)}
+.opt:disabled{cursor:default}
+.opt b{flex:none;width:28px;height:28px;border-radius:9px;background:var(--bg);display:grid;place-items:center;font-size:13px;text-transform:uppercase}
+.opt.ok{border-color:var(--ok);background:var(--okbg)}.opt.ok b{background:var(--ok);color:#fff}
+.opt.bad{border-color:var(--bad);background:var(--badbg)}.opt.bad b{background:var(--bad);color:#fff}
+.fb{border-radius:14px;padding:14px 16px;margin:16px 0;animation:pop .25s}
+.fb.ok{background:var(--okbg);border-left:5px solid var(--ok)}.fb.bad{background:var(--badbg);border-left:5px solid var(--bad)}
+.fb strong{display:block;font-size:17px;margin-bottom:4px}
+@keyframes pop{from{opacity:0;transform:translateY(6px)}}
+textarea{width:100%;min-height:70px;resize:vertical;border:2px solid var(--line);border-radius:12px;padding:10px 12px;
+background:var(--bg);color:var(--ink);font:inherit;margin-top:6px}
+textarea:focus{outline:none;border-color:var(--acc)}
+label{font:700 13px inherit;color:var(--mut)}
+.row{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-top:18px}
+.btn{border:0;border-radius:12px;padding:10px 18px;font:700 14px inherit;cursor:pointer;background:var(--acc);color:#fff;transition:filter .12s,transform .12s}
+.btn:hover{filter:brightness(1.1)}.btn:active{transform:scale(.97)}
+.btn.ghost{background:var(--bg);color:var(--ink);border:1px solid var(--line)}
+.btn.flag.on{background:var(--warn);color:#000;border-color:var(--warn)}
+.btn.danger{background:var(--bad)}
+.bar{height:8px;background:var(--line);border-radius:9px;overflow:hidden}
+.bar i{display:block;height:100%;background:linear-gradient(90deg,var(--acc),#00b8b0);transition:width .4s}
+.stat{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:16px 0}
+.stat div{background:var(--bg);border-radius:14px;padding:12px;text-align:center}
+.stat b{display:block;font-size:24px}.stat span{font-size:12px;color:var(--mut)}
+.stat .g b{color:var(--ok)}.stat .r b{color:var(--bad)}
+h3{margin:22px 0 10px;font-size:14px;color:var(--mut);text-transform:uppercase;letter-spacing:.06em}
+.tp{margin:9px 0;font-size:13px}.tp div{display:flex;justify-content:space-between}
+.tp .bar{height:6px;margin-top:3px}.tp .bar i{background:var(--ok)}
+.filters{display:flex;gap:8px;flex-wrap:wrap;margin:14px 0}
+.chip{border:1px solid var(--line);background:var(--card);color:var(--ink);border-radius:99px;padding:6px 14px;font:600 13px inherit;cursor:pointer}
+.chip.on{background:var(--acc);color:#fff;border-color:var(--acc)}
+.ri{border-left:5px solid var(--line);margin-bottom:14px}
+.ri.ok{border-left-color:var(--ok)}.ri.bad{border-left-color:var(--bad)}.ri.none{border-left-color:var(--warn)}
+.ri .qtext{font-size:16px}
+.ri .o{padding:6px 10px;border-radius:9px;margin:4px 0;font-size:14px}
+.ri .o.ok{background:var(--okbg)}.ri .o.bad{background:var(--badbg)}
+.cm{background:color-mix(in srgb,var(--warn) 18%,var(--card));border-radius:12px;padding:10px 12px;margin-top:10px;font-size:14px;white-space:pre-wrap}
+.full{grid-column:1/-1}
+.kbd{color:var(--mut);font-size:12px;margin-top:14px}
+.saved{font-size:12px;color:var(--ok);opacity:0;transition:opacity .3s}.saved.on{opacity:1}
+</style>
+</head>
+<body>
+<header>
+  <div class="brand">⚡ Quiz Arquitetura II</div>
+  <nav><button id="tQuiz" class="on">Estudar</button><button id="tRep">Relatório</button></nav>
+  <div class="sp"></div>
+  <button class="btn ghost" id="bExp">⬇ Exportar JSON</button>
+</header>
+<main id="app"></main>
+
+<script>
+const $ = s => document.querySelector(s);
+const esc = s => String(s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const api = (p, body) => fetch('/api/' + p, body === undefined ? {} :
+  {method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify(body)}).then(r => r.json());
+let S, Q, view = 'quiz', filter = 'all', saveT;
+
+const pct = (a, b) => b ? Math.round(100 * a / b) : 0;
+
+function sidebar() {
+  const rows = arr => arr.map(t => `<div class="tp"><div><span>${esc(t.k)}</span><span>${t.h}/${t.a} · ${pct(t.h, t.a)}%</span></div>
+    <div class="bar"><i style="width:${pct(t.h, t.a)}%"></i></div></div>`).join('') || '<div class="tp">Responda para ver.</div>';
+  const dn = {F: 'Fáceis', M: 'Médias', D: 'Difíceis'};
+  return `<aside class="card"><div class="bar"><i style="width:${pct(S.answered, S.total)}%"></i></div>
+    <div class="tp" style="text-align:right">${S.answered} / ${S.total} respondidas</div>
+    <div class="stat"><div class="g"><b>${S.hits}</b><span>acertos</span></div><div class="r"><b>${S.wrong}</b><span>erros</span></div>
+    <div><b>${pct(S.hits, S.answered)}%</b><span>aproveit.</span></div></div>
+    <div class="stat" style="grid-template-columns:1fr 1fr"><div><b>${S.flagged}</b><span>marcadas</span></div><div><b>${S.comments}</b><span>comentários</span></div></div>
+    <h3>Por dificuldade</h3>${rows(S.by_diff.map(d => ({...d, k: dn[d.k] || d.k})))}
+    <h3>Por assunto</h3>${rows(S.by_topic)}</aside>`;
+}
+
+function optHtml(q) {
+  const done = !!q.choice;
+  return Object.entries(q.options).map(([k, v]) => {
+    let cls = '';
+    if (done && k === q.answer) cls = 'ok';
+    else if (done && k === q.choice) cls = 'bad';
+    return `<button class="opt ${cls}" data-k="${k}" ${done ? 'disabled' : ''}><b>${k}</b><span>${esc(v)}</span></button>`;
+  }).join('');
+}
+
+function renderQuiz() {
+  if (!Q) return $('#app').innerHTML = `<div class="card"><h2>🎉 Você chegou ao fim!</h2><p>Todas as ${S.total} questões foram apresentadas.
+    Abra o Relatório ou reinicie para uma nova ordem.</p><button class="btn ghost" onclick="go(S.total-1)">← Voltar à última</button></div>${sidebar()}`;
+  const done = !!Q.choice;
+  $('#app').innerHTML = `<section class="card">
+    <div class="meta"><span class="tag">Questão ${Q.pos + 1} de ${S.total}</span><span class="tag ${Q.diff}">${{F:'Fácil',M:'Média',D:'Difícil'}[Q.diff]}</span>
+      ${Q.star ? '<span class="tag">★ provável em aula</span>' : ''}<span class="tag">${esc(Q.topic)}</span></div>
+    <p class="qtext">${esc(Q.text)}</p>
+    <div id="opts">${optHtml(Q)}</div>
+    ${done ? `<div class="fb ${Q.correct ? 'ok' : 'bad'}"><strong>${Q.correct ? '✅ Acertou!' : '❌ Errou. Resposta certa: ' + Q.answer.toUpperCase()}</strong>${esc(Q.expl)}</div>` : ''}
+    <label for="cm">💬 Comentário <span class="saved" id="sv">salvo ✓</span></label>
+    <textarea id="cm" placeholder="Anote uma dúvida, um macete…">${esc(Q.comment)}</textarea>
+    <div class="row"><button class="btn ghost" id="bPrev" ${Q.pos ? '' : 'disabled'}>← Anterior</button>
+      <button class="btn ghost flag ${Q.flagged ? 'on' : ''}" id="bFlag">${Q.flagged ? '🚩 Marcada' : '🏳 Marcar'}</button>
+      <div class="sp"></div><button class="btn" id="bNext">${done ? 'Próxima →' : 'Pular →'}</button></div>
+    <div class="kbd">Atalhos: A–D responder · ←/→ navegar · F marcar</div></section>${sidebar()}`;
+  document.querySelectorAll('.opt').forEach(b => b.onclick = () => answer(b.dataset.k));
+  $('#bPrev').onclick = () => go(Q.pos - 1);
+  $('#bNext').onclick = () => go(Q.pos + 1);
+  $('#bFlag').onclick = flag;
+  $('#cm').oninput = e => { clearTimeout(saveT); saveT = setTimeout(() => saveComment(e.target.value), 500); };
+  $('#cm').onblur = e => saveComment(e.target.value);
+}
+
+async function saveComment(v) {
+  clearTimeout(saveT);
+  if (!Q || v === Q.comment) return;
+  Q.comment = v;
+  await api('comment', {qid: Q.id, comment: v});
+  S = await api('state');
+  $('#sv')?.classList.add('on'); setTimeout(() => $('#sv')?.classList.remove('on'), 1200);
+}
+
+async function load(pos) {
+  S = await api('state');
+  pos = Math.max(0, Math.min(pos ?? S.pos, S.total));
+  Q = pos < S.total ? await api('q/' + pos) : null;
+  await api('pos', {pos});
+  renderQuiz();
+}
+const go = async p => { await saveComment($('#cm')?.value ?? ''); load(p); };
+async function answer(k) {
+  if (Q.choice) return;
+  await api('answer', {qid: Q.id, choice: k});
+  load(Q.pos);
+}
+async function flag() { await api('flag', {qid: Q.id, flagged: !Q.flagged}); load(Q.pos); }
+
+async function renderReport() {
+  const [R, st] = await Promise.all([api('report'), api('state')]); S = st;
+  const cnt = f => R.filter(f).length;
+  const F = {all: () => true, ok: r => r.acertou === true, bad: r => r.acertou === false, flag: r => r.marcada, cm: r => r.comentario};
+  const names = {all: 'Todas', ok: '✅ Acertei', bad: '❌ Errei', flag: '🚩 Marcadas', cm: '💬 Com comentário'};
+  const list = R.filter(F[filter]);
+  $('#app').innerHTML = `<div class="full card"><h2 style="margin-top:0">📊 Relatório</h2>
+    <div class="stat"><div><b>${R.length}</b><span>interagidas</span></div><div class="g"><b>${S.hits}</b><span>acertos</span></div>
+    <div class="r"><b>${S.wrong}</b><span>erros</span></div></div>
+    <div class="filters">${Object.entries(names).map(([k, n]) => `<button class="chip ${filter === k ? 'on' : ''}" data-f="${k}">${n} (${cnt(F[k])})</button>`).join('')}</div>
+    <div class="row" style="margin:0"><button class="btn ghost danger" style="color:#fff" id="bReset">↺ Reiniciar tudo</button></div></div>
+    <div class="full">${list.map(r => `<article class="card ri ${r.acertou === null ? 'none' : r.acertou ? 'ok' : 'bad'}">
+      <div class="meta"><span class="tag">#${r.ordem}</span><span class="tag">${esc(r.assunto)}</span>
+      ${r.acertou === null ? '<span class="tag">⏭ não respondida</span>' : r.acertou ? '<span class="tag F">✅ Acertei</span>' : '<span class="tag D">❌ Errei</span>'}
+      ${r.marcada ? '<span class="tag">🚩 marcada</span>' : ''}</div>
+      <p class="qtext">${esc(r.pergunta)}</p>
+      ${Object.entries(r.alternativas).map(([k, v]) => `<div class="o ${k === r.gabarito ? 'ok' : k === r.resposta ? 'bad' : ''}"><b>${k})</b> ${esc(v)}
+        ${k === r.resposta ? ' <em>← sua resposta</em>' : ''}${k === r.gabarito ? ' <em>✔ correta</em>' : ''}</div>`).join('')}
+      ${r.comentario ? `<div class="cm">💬 ${esc(r.comentario)}</div>` : ''}</article>`).join('') || '<div class="card">Nada aqui ainda.</div>'}</div>`;
+  document.querySelectorAll('.chip').forEach(b => b.onclick = () => { filter = b.dataset.f; renderReport(); });
+  $('#bReset').onclick = async () => {
+    if (confirm('Apagar todas as respostas e sortear nova ordem?')) { await api('reset', {}); setView('quiz'); }
+  };
+}
+
+function setView(v) {
+  view = v;
+  $('#tQuiz').classList.toggle('on', v === 'quiz'); $('#tRep').classList.toggle('on', v === 'rep');
+  v === 'quiz' ? load() : renderReport();
+}
+$('#tQuiz').onclick = () => setView('quiz');
+$('#tRep').onclick = async () => { await saveComment($('#cm')?.value ?? ''); setView('rep'); };
+$('#bExp').onclick = () => location.href = '/api/export';
+document.addEventListener('keydown', e => {
+  if (view !== 'quiz' || !Q || /TEXTAREA/.test(document.activeElement.tagName) || e.ctrlKey || e.metaKey) return;
+  const k = e.key.toLowerCase();
+  if (Q.options[k]) answer(k);
+  else if (k === 'arrowright') go(Q.pos + 1);
+  else if (k === 'arrowleft' && Q.pos) go(Q.pos - 1);
+  else if (k === 'f') flag();
+});
+load();
+</script>
+</body>
+</html>

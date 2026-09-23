@@ -1,0 +1,8 @@
+services:
+  quiz:
+    build: .
+    ports: ["8765:8765"]
+    volumes: ["quiz-data:/data"]   # progresso persiste entre reinícios
+    restart: unless-stopped
+volumes:
+  quiz-data:

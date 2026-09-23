@@ -1,0 +1,1 @@
+# Sem dependências externas: o app usa só a biblioteca padrão do Python 3.9+.
