@@ -68,6 +68,8 @@ h3{margin:22px 0 10px;font-size:14px;color:var(--mut);text-transform:uppercase;l
 .cm{background:color-mix(in srgb,var(--warn) 18%,var(--card));border-radius:12px;padding:10px 12px;margin-top:10px;font-size:14px;white-space:pre-wrap}
 .full{grid-column:1/-1}
 .kbd{color:var(--mut);font-size:12px;margin-top:14px}
+footer{text-align:center;padding:10px 14px 40px;font-size:14px;color:var(--mut)}
+footer a{color:var(--acc);font-weight:700;text-decoration:none}footer a:hover{text-decoration:underline}
 .saved{font-size:12px;color:var(--ok);opacity:0;transition:opacity .3s}.saved.on{opacity:1}
 </style>
 </head>
@@ -79,6 +81,7 @@ h3{margin:22px 0 10px;font-size:14px;color:var(--mut);text-transform:uppercase;l
   <button class="btn ghost" id="bExp">⬇ Exportar JSON</button>
 </header>
 <main id="app"></main>
+<footer>Feito por Zanoni · <a href="https://www.zanoni.dev.br" target="_blank" rel="noopener">🌐 Portfólio: www.zanoni.dev.br</a></footer>
 
 <script>
 const $ = s => document.querySelector(s);

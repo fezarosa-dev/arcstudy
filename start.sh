@@ -5,7 +5,7 @@ mode="$1"
 if [ -z "$mode" ]; then
   if docker info >/dev/null 2>&1; then mode=docker; else mode=python; fi
 fi
-echo "Iniciando via $mode -> http://localhost:8765"
+echo "Iniciando via $mode -> http://localhost:${PORT:-8765}"
 if [ "$mode" = docker ]; then
   exec docker compose up --build
 else
